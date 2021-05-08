@@ -6,19 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use HasProfilePhoto;
-    use HasTeams;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, Followable;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +18,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username',
+        'name',
+        'avatar',
+        'banner',
+        'email',
+        'password',
     ];
 
     /**
@@ -37,8 +34,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
     ];
 
     /**
@@ -50,12 +45,45 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    public function getAvatarAttribute($value)
+    {
+        return asset($value ? 'storage/' . $value : '/images/default-avatar.png');
+    }
+
+    public function getBannerAttribute($value)
+    {
+        return asset($value ? 'storage/' . $value : '/images/default-profile-banner.jpg');
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function timeline() {
+        $friends = $this->follows()->pluck('id');
+
+        return Tweet::whereIn('user_id', $friends)
+            ->orWhere('user_id', $this->id)
+            ->withLikes()
+            ->latest()
+            ->paginate(50);
+    }
+
+    public function tweets()
+    {
+        return $this->hasMany(Tweet::class, 'user_id')->latest();
+    }
+
+    public function path($append = '')
+    {
+        $path = route('profiles', $this->username);
+
+        return $append ? "{$path}/{$append}" : $path;
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'user_id');
+    }
 }
