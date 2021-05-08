@@ -13,11 +13,20 @@ class Tweet extends Model
 
     protected $fillable = [
         'user_id',
-        'body'
+        'body',
+        'images'
     ];
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getImagesAttribute($value)
+    {
+        if($value) {
+            return asset('storage/' . $value);
+        }
+        return null;
     }
 
 //    public function delete($tweet)

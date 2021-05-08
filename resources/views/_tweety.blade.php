@@ -20,6 +20,13 @@
             {{ $tweet->body }}
         </p>
 
+        @if($tweet->images)
+            <img src="{{ $tweet->images }}" alt="tweet images"
+                 style="height: 260px; max-height: 260px; max-width: 500px; width: 500px"
+                 class="overflow-hidden object-cover rounded-3xl mb-2"
+            >
+        @endif
+
         <x-like-dislike-buttons :tweet="$tweet" />
     </div>
 
