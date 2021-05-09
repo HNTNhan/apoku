@@ -24,6 +24,8 @@ class TweetsController extends Controller
 
         if(request('post_image')) {
             $attributes['post_image'] = request('post_image')->store('post_image');
+        } else {
+            $attributes['post_image'] = null;
         }
 
         Tweet::create([

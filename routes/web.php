@@ -24,13 +24,16 @@ Route::get('/', function () {
 });
 
 Route::get('/profiles/{user:username}', [ProfilesController::class, 'show'])
-    ->name('profiles')
-    ->middleware(['auth']);
+    ->middleware(['auth'])
+    ->name('profiles');
 Route::patch('/profiles/{user:username}', [ProfilesController::class, 'update'])
+    ->middleware(['auth'])
     ->middleware('can:edit,user');
-Route::patch('/profiles/{user:username}/banner', [ProfilesController::class, 'update_banner'])
+Route::patch('/profiles/{user:username}', [ProfilesController::class, 'update_banner'])
+    ->middleware(['auth'])
     ->middleware('can:edit,user');
 Route::get('/profiles/{user:username}/edit', [ProfilesController::class, 'edit'])
+    ->middleware(['auth'])
     ->middleware(['auth', 'can:edit,user'])
     ->name('edit');
 
@@ -45,7 +48,11 @@ Route::get('/tweets', [TweetsController::class, 'index'])
 Route::post('/tweets', [TweetsController::class, 'store'])
     ->middleware(['auth']);
 Route::delete('/tweets/{tweet}', [TweetsController::class, 'destroy'])
-    ->middleware(['auth', 'can:edit,user']);
+    ->middleware(['auth'])
+    ->middleware('can:delete,tweet');
+Route::get('/tweets/{tweet}/like', function () {
+        return redirect()->route('home');
+    })->middleware(['auth']);
 Route::post('/tweets/{tweet}/like', [TweetLikesController::class, 'store'])
     ->middleware(['auth']);
 Route::delete('/tweets/{tweet}/like', [TweetLikesController::class, 'destroy'])

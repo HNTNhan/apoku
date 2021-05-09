@@ -5,15 +5,23 @@
                  alt="Post's Author Image"
                  class="rounded-full mr-2"
                  width="50px"
+                 height="50px"
             >
         </a>
     </div>
 
     <div>
-        <div style="width: fit-content; max-width: 200px">
-            <a href="{{ $tweet->user->path() }}">
-                <h5 class="font-bold mb-4">{{ $tweet->user->name }}</h5>
+        <div
+             class="flex items-center"
+        >
+             <a href="{{ $tweet->user->path() }}" class="mr-2">
+                <h5 class="font-bold">{{ $tweet->user->name }}</h5>
             </a>
+
+            <span class="text-gray-400 text-sm" style="height: 100%">
+                {{ '@' . $tweet->user->name }} :
+                <time>{{ $tweet->created_at->diffInHours() < 48 ? $tweet->created_at->diffForHumans() :  $tweet->created_at->toFormattedDateString()}}</time>
+            </span>
         </div>
 
         <p class="text-sm mb-2">

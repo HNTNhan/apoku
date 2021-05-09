@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -23,5 +24,4 @@ class UserPolicy
     {
         return $currentUser->is($user);
     }
-
 }
