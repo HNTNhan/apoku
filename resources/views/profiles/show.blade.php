@@ -21,7 +21,7 @@
                 @if($show_banner)
                     <div class="absolute text-center text-black bg-gray-100 rounded-lg"
                          style="top: 5px; right: 10px; width: 200px">
-                        <form method="POST" action="{{ $user->path()  }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ $user->path() . '/banner' }}" enctype="multipart/form-data">
                             @csrf
                             @method('PATCH')
 

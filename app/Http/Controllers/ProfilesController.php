@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProfilesController extends Controller
@@ -27,6 +29,7 @@ class ProfilesController extends Controller
 
     public function update(User $user)
     {
+        //ddd( substr($user->avatar, strpos($user->avatar, 'avatar')));
         $attributes = request()->validate([
             'username' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique('users')->ignore($user)],
             'name' => 'required|string|max:255',
@@ -37,8 +40,9 @@ class ProfilesController extends Controller
 
         if(request('avatar')) {
             $attributes['avatar'] = request('avatar')->store('avatars');
+            $old_avatar = substr($user->avatar, strpos($user->avatar, 'avatar') );
+            Storage::delete($old_avatar);
         }
-
 
         $user->update($attributes);
 
@@ -54,6 +58,8 @@ class ProfilesController extends Controller
 
         if(request('banner')) {
             $attributes['banner'] = request('banner')->store('banner');
+            $old_banner = substr($user->banner, strpos($user->banner, 'banner') );
+            Storage::delete($old_banner);
         }
 
 

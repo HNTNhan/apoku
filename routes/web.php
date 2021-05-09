@@ -29,7 +29,7 @@ Route::get('/profiles/{user:username}', [ProfilesController::class, 'show'])
 Route::patch('/profiles/{user:username}', [ProfilesController::class, 'update'])
     ->middleware(['auth'])
     ->middleware('can:edit,user');
-Route::patch('/profiles/{user:username}', [ProfilesController::class, 'update_banner'])
+Route::patch('/profiles/{user:username}/banner', [ProfilesController::class, 'update_banner'])
     ->middleware(['auth'])
     ->middleware('can:edit,user');
 Route::get('/profiles/{user:username}/edit', [ProfilesController::class, 'edit'])
